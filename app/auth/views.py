@@ -1,5 +1,5 @@
 from flask import request, redirect, flash, render_template, url_for
-from flask_login import login_user
+from flask_login import login_user, login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from . import auth
@@ -18,11 +18,10 @@ def login():
             if check_password_hash(user.password, password):
                 login_user(user)
                 next_page = request.args.get('next')
-                redirect(next_page)
-            else:
-                flash('Username or password is not correct!')
-    else:
-        flash('Please fill username and password files!')
+                if next_page is None or not next_page.startswith('/'):
+                    next_page = url_for('main.index')
+                return redirect(next_page)
+    flash('Invalid username or password.')
 
     return render_template('auth/login.html')
 
@@ -36,13 +35,21 @@ def register():
         if username and password:
             with session() as s:
                 hash_pass = generate_password_hash(password)
-                print(username, password, hash_pass)
                 new_user = User(username=username, password=hash_pass)
                 s.add(new_user)
-                print('add')
                 s.commit()
         else:
             flash('Please, fill all fields! ')
         return redirect(url_for('auth.login'))
 
     return render_template('auth/register.html')
+
+
+@auth.route('/logout', methods=['GET', 'POST'])
+@login_required
+def logout():
+    logout_user()
+    flash('You have been logged out.')
+    return redirect(url_for('main.index'))
+
+

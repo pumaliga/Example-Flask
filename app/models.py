@@ -40,5 +40,14 @@ class User(UserMixin,Base):
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    with session() as s:
+        user = s.query(User).get(int(user_id))
+    return user
+
+# def load_user(user_id):
+# with session() as s:
+    #     user_id = s.query(User).get_id(user_id)
+    #     print(user_id)
+    # return user_id
+
 

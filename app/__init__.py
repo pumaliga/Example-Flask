@@ -8,6 +8,7 @@ login_manager = LoginManager()
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'secret-key'
+    app.debug = True
     login_manager.init_app(app)
 
     from .auth import auth as auth_blueprint
