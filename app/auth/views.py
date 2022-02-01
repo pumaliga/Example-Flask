@@ -1,5 +1,6 @@
 from flask import request, redirect, flash, render_template, url_for
 from flask_login import login_user
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from . import auth
 from ..models import session, User
@@ -14,14 +15,16 @@ def login():
         with session() as s:
             user = s.query(User).filter_by(username=username).first()
 
-            login_user(user)
-            next_page = request.args.get('next')
-            redirect(next_page)
+            if check_password_hash(user.password, password):
+                login_user(user)
+                next_page = request.args.get('next')
+                redirect(next_page)
+            else:
+                flash('Username or password is not correct!')
     else:
-        flash('Username or password is not correct!')
+        flash('Please fill username and password files!')
 
     return render_template('auth/login.html')
-
 
 
 @auth.route('/register', methods=['GET', 'POST'])
@@ -32,12 +35,14 @@ def register():
     if request.method == "POST":
         if username and password:
             with session() as s:
-                # hash_pass = generate_password_hash(password)
-                new_user = User(username=username, password=password)
+                hash_pass = generate_password_hash(password)
+                print(username, password, hash_pass)
+                new_user = User(username=username, password=hash_pass)
                 s.add(new_user)
+                print('add')
                 s.commit()
         else:
             flash('Please, fill all fields! ')
-        return redirect(url_for('admin.login'))
+        return redirect(url_for('auth.login'))
 
-    return render_template('register.html')
+    return render_template('auth/register.html')

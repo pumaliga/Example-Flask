@@ -1,9 +1,10 @@
 {% extends 'index.html' %}
 
 {% block content %}
-        <div>
-            <h2>Login page</h2>
-            <a href="{{ url_for('auth.register') }}">New account</a>
+    <div>
+            <h2>Register page</h2>
+            <a href="{{ url_for('auth.login') }}">Log in</a>
+
             {% with messages = get_flashed_messages() %}
                 {% if messages %}
                     <ul class=flashes>
@@ -14,15 +15,15 @@
                 {% endif %}
             {% endwith %}
 
-            <div class="login-form">
-                <form class="login" method="post">
+            <div class="register-form">
+                <form class="register" method="post">
                     <div>
                         <input id="username-input" name="username" required>
                     </div>
                     <div>
-                        <input id="pass" type="password">
+                        <input id="pass" type="password" name="password">
                     </div>
-                    <button type="submit">Log in</button>
+                    <button type="submit">Submit</button>
                 </form>
             </div>
         </div>
