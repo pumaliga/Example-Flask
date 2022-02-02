@@ -1,8 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h2>Hi! Dear friend.</h2>
-    {% if request.is_authenticated %}
-        {{ current_user.name }}ç
+    <h2>Hi!</h2>
+    {% if current_user.is_authenticated %}
+    <div>
+        <div class="title">
+            <h2>Welcome {{ current_user.username }}</h2>
+        </div>
+        <form class="logout" method="post">
+            <button>
+                <a class="logout-link" href="{{ url_for('auth.logout') }}">Log out</a>
+            </button>
+        </form>
+    </div>
     {% endif %}
 {% endblock %}

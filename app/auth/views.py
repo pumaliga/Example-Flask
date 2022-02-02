@@ -50,6 +50,6 @@ def register():
 def logout():
     logout_user()
     flash('You have been logged out.')
-    return redirect(url_for('main.index'))
+    return redirect(url_for('auth.login'))
 
 

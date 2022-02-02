@@ -3,7 +3,7 @@
 {% block content %}
     <div>
             <h2>Register page</h2>
-            <a href="{{ url_for('auth.login') }}">Log in</a>
+            <a href="{{ url_for('auth.login') }}">Have account?</a>
 
             {% with messages = get_flashed_messages() %}
                 {% if messages %}
