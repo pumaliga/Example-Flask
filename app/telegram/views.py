@@ -1,36 +1,42 @@
 import time
 import requests
 from flask import render_template
+
+# from app.telegram import telega
 # from . import telega
 
 BOT_TOKEN = '5224798347:AAGzMX8bv2ghwYjGw1Wq2jIXtvtm-XMwCTU'
 API_LINK = f'https://api.telegram.org/bot{BOT_TOKEN}'
 
 
-# def get_updates():
-#     while True:
-#         updates = requests.get(API_LINK + '/getUpdates').json()
-#         message = updates['result'][0]['message']
-#         chat_id = message['from']['id']
-#         text = message['text']
-#         if text == '/getcode':
-#             send_message = requests.get(API_LINK + f'/sendMessage?chat_id={chat_id}&text=1234567890')
-#
-#         else:
-#             time.sleep(4)
+def get_updates():
+    old_id = 0
+    new_id = 0
+    while True:
+        try:
+            updates = requests.get(API_LINK + '/getUpdates?offset=-1').json()
+            # updates = requests.get(API_LINK + '/getUpdates?offset=-1').json()
+            message = updates['result'][0]['message']
+            update_id = updates['result'][0]['update_id']
+            new_id = update_id
+            chat_id = message['from']['id']
 
-        #     print('hahaha')
-        # send_message = requests.get(API_LINK + f'/sendMessage?chat_id={chat_id}&text=1234567890')
-        # time.sleep(4)
+            if message['text'] == '/start' and old_id != new_id:
+                send_message = requests.get(API_LINK + f'/sendMessage?chat_id={chat_id}&text=Enter command /getcode for new pass')
+                old_id = new_id
 
-        # message = updates['result'][0]['message']
-        # chat_id = message['from']['id']
-        # text = message['text']
-        # send_message = requests.get(API_LINK + f'/sendMessage?chat_id={chat_id}&text=Fuck you')
+            elif message['text'] == '/getcode' and old_id != new_id:
+                # print(old_id)
+                send_message = requests.get(API_LINK + f'/sendMessage?chat_id={chat_id}&text=1234567890')
+                old_id = new_id
+                print('tyt 3', old_id)
 
-        # time.sleep(5)
+            else:
+                print('tyt 4')
+                time.sleep(5)
+        except KeyError:
+            continue
 
-# print(get_updates())
 
 
 # @telega.route('/login', methods=['GET', 'POST'])
