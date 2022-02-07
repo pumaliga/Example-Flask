@@ -1,9 +1,9 @@
 from contextlib import contextmanager
 
 from flask_login import UserMixin
-from sqlalchemy import Column, Integer, String, create_engine
+from sqlalchemy import Column, Integer, String, create_engine, ForeignKey, TEXT, Boolean
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.orm import scoped_session, sessionmaker, relationship
 
 from . import login_manager
 
@@ -27,7 +27,7 @@ def session():
         connection.close()
 
 
-class User(UserMixin,Base):
+class User(UserMixin, Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
     username = Column(String(200), unique=True, nullable=False)
@@ -44,10 +44,40 @@ def load_user(user_id):
         user = s.query(User).get(int(user_id))
     return user
 
+
 # def load_user(user_id):
 # with session() as s:
     #     user_id = s.query(User).get_id(user_id)
     #     print(user_id)
     # return user_id
+
+
+class Category(Base):
+    __tablename__ = 'categories'
+    id = Column(Integer, primary_key=True)
+    avatar = Column(String(200), unique=True)
+    name = Column(String(200), unique=True, nullable=False)
+    description = Column(String(200), nullable=False)
+    product_info = relationship("Product", backref="category", lazy='dynamic', cascade="all, delete, delete-orphan")
+
+
+class Product(Base):
+    __tablename__ = 'products'
+    id = Column(Integer, primary_key=True)
+    category_id = Column(Integer, ForeignKey('categories.id'), nullable=False)
+    product_photo = relationship("Photo", backref="product", lazy='dynamic', cascade="all, delete, delete-orphan")
+    name = Column(String(200), unique=True, nullable=False)
+    description = Column(TEXT, nullable=False)
+    price = Column(Integer, nullable=False)
+    available = Column(Boolean, default=False)
+
+
+class Photo(Base):
+    __tablename__ = 'photos'
+    id = Column(Integer, primary_key=True)
+    product_id = Column(Integer, ForeignKey('products.id'), nullable=False)
+    photo = Column(String(200), unique=True)
+
+
 
 

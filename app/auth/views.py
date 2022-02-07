@@ -23,7 +23,7 @@ def login():
                 return redirect(next_page)
     flash('Invalid username or password.')
 
-    return render_template('auth/login_telegram.html')
+    return render_template('auth/login.html')
 
 
 @auth.route('/register', methods=['GET', 'POST'])

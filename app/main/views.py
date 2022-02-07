@@ -1,14 +1,74 @@
 import json
+import os
 
-from flask import render_template, jsonify
+from flask import render_template, jsonify, request, flash, redirect, url_for
 from flask_login import login_required
+from werkzeug.utils import secure_filename
 
 from . import main
+from .. import ALLOWED_EXTENSIONS, UPLOAD_FOLDER
+from ..models import session, Category
 
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
     return render_template('index.html')
+
+
+# def uploader(avatar_category):
+#     """ Method for encrypting files """
+#     image_data = {}
+#     img_postfix = avatar_category.filename.rsplit('.', 1)[-1]
+#     img_name = avatar_category.filename.rsplit('.', 1)[0]
+#
+#     if img_postfix not in ('png', 'jpg', 'jpeg'):
+#         return False
+#
+#     image = 'avatar_{0}.{1}'.format(img_name, img_postfix)
+#     image_data[img_name] = image
+#
+#     return image_data
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@main.route('/add/category', methods=['GET', 'POST'])
+@login_required
+def add_category():
+    if request.method == 'POST':
+
+        try:
+            data = request.form
+            name = data.get('name')
+            description = data.get('description')
+
+            # if 'avatar' not in request.files:
+            #     flash('No file part')
+            #     return redirect(url_for('main.add_category'))
+
+            file = request.files.get('avatar')
+
+            if file.filename == '':
+                flash('No selected file')
+                return redirect(url_for('main.add_category'))
+
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(UPLOAD_FOLDER, filename))
+                with session() as s:
+                    new_category = Category(avatar=filename, name=name,
+                                            description=description)
+                    s.add(new_category)
+                    s.commit()
+                return redirect(url_for('main.add_category'))
+
+        except KeyError:
+            return jsonify({'saved': 'No file'})
+
+    return render_template('add_category.html')
+
 
 @main.route('/get_info_one')
 def get_info_one():

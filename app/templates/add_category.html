@@ -1,0 +1,35 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+    {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul class=flashes>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+    <div class="add-category">
+
+        <form method="POST" enctype="multipart/form-data">
+            <h2>
+                Create new category
+            </h2>
+            <div class="avatar">
+                <input type="file" class="input-for-avatar" name="avatar" multiple>
+            </div>
+            <div class="title">
+                <input name="name" class="input-for-title" required>
+            </div>
+            <div class="description">
+                <input name="description" class="input-for-description" required>
+            </div>
+            <div>
+                <input type="submit" value=Send>
+
+            </div>
+        </form>
+    </div>
+{% endblock %}
