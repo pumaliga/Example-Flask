@@ -1,7 +1,6 @@
-from flask import Flask, redirect, url_for, request
+from flask import Flask
 from flask_login import LoginManager
 
-from app.telegram.views import get_updates
 
 login_manager = LoginManager()
 # login_manager.login_view = 'auth.login'
@@ -20,9 +19,6 @@ def create_app():
 
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint, url_prefix='/main')
-
-    from .telegram import telega as telegram_blueprint
-    app.register_blueprint(telegram_blueprint, url_prefix='/telega')
 
     from app.view import views
     app.register_blueprint(views)

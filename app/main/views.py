@@ -15,20 +15,6 @@ def index():
     return render_template('index.html')
 
 
-# def uploader(avatar_category):
-#     """ Method for encrypting files """
-#     image_data = {}
-#     img_postfix = avatar_category.filename.rsplit('.', 1)[-1]
-#     img_name = avatar_category.filename.rsplit('.', 1)[0]
-#
-#     if img_postfix not in ('png', 'jpg', 'jpeg'):
-#         return False
-#
-#     image = 'avatar_{0}.{1}'.format(img_name, img_postfix)
-#     image_data[img_name] = image
-#
-#     return image_data
-
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
