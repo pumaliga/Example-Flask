@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>
+        Welcome to Flask-example!
+    </h2>
+    <p>
+        This project was developed for educational purposes.
+    </p>
+    <p>
+        If you want login, click <a href="{{ url_for('views.login') }}">here</a>
+    </p>
+{% endblock %}

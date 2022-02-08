@@ -1,0 +1,41 @@
+{% extends 'index.html' %}
+
+{% block content %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+
+            <ul class=flashes>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <div class="container">
+        <div class="form-container">
+            <h2>Login page</h2>
+            <form method="post">
+                <div>
+                    <div>
+                        Enter username
+                    </div>
+                    <input id="username" name="username">
+                </div>
+                <div>
+                    <div>
+                        Enter password
+                    </div>
+                    <input id="password-code" name="password" type="password" autocomplete="off">
+                    <p>
+                        <a href="https://t.me/example_polomo_bot" target="_blank">Get the code</a>
+                    </p>
+                </div>
+
+                <div>
+                    <input type="submit" value="Send">
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
