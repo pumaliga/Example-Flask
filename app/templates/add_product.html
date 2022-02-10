@@ -1,0 +1,39 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+    {% with messages = get_flashed_messages() %}
+
+        {% if messages %}
+            <ul class=flashes>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    <div class="add-category">
+        <form method="POST" enctype="multipart/form-data">
+            <h2>
+                Create new model
+            </h2>
+            <div class="category-fk">
+                <select class="select-category">
+                    {% for i in categories %}
+                        <option value="{{ i.name }}">{{ i.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="name-product">
+                <input name="name" class="" required>
+            </div>
+            <div class="description">
+                <input name="description" class="input-for-description" required>
+            </div>
+            <div>
+                <input type="submit" value=Send>
+
+            </div>
+        </form>
+    </div>
+{% endblock %}
