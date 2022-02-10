@@ -1,7 +1,7 @@
 from contextlib import contextmanager
 
 from flask_login import UserMixin
-from sqlalchemy import Column, Integer, String, create_engine, ForeignKey, TEXT, Boolean
+from sqlalchemy import Column, Integer, String, create_engine, ForeignKey, TEXT, Boolean, BigInteger
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker, relationship
 
@@ -32,10 +32,12 @@ class User(UserMixin, Base):
     id = Column(Integer, primary_key=True)
     username = Column(String(200), unique=True, nullable=False)
     password = Column(String(200), nullable=False)
+    create_pass = Column(BigInteger)
 
-    def __init__(self, username, password):
+    def __init__(self, username, password, create_pass):
         self.username = username
         self.password = password
+        self.create_pass = create_pass
 
 
 @login_manager.user_loader
