@@ -56,6 +56,14 @@ def add_category():
     return render_template('add_category.html')
 
 
+@main.route('/add/product', methods=['GET', 'POST'])
+def add_product():
+    with session() as s:
+        categories = s.query(Category).all()
+
+    return render_template('add_product.html', categories=categories)
+
+
 @main.route('/get_info_one')
 def get_info_one():
     data_info = [{
