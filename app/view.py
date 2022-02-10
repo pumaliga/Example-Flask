@@ -1,4 +1,3 @@
-import datetime
 import random
 import string
 import time
@@ -8,6 +7,7 @@ from flask import Blueprint, request, render_template, redirect, url_for, flash
 from flask_login import login_user, login_required, logout_user
 
 from app.models import session, User
+from app.register import Registration, User, new_user
 
 views = Blueprint("views", __name__)
 BOT_TOKEN = '5224798347:AAGzMX8bv2ghwYjGw1Wq2jIXtvtm-XMwCTU'
@@ -34,15 +34,20 @@ def send_message(chat_id, text, username):
     url = f'https://api.telegram.org/bot{BOT_TOKEN}/{method}'
     data = {'chat_id': chat_id, "text": text}
     requests.post(url, data=data)
-    with session() as s:
-        user = s.query(User).filter_by(username=username).first()
-        if not user:
-            new_user = User(username=username, password=text[0], create_pass=text[1])
-            s.add(new_user)
-        else:
-            user.password = text[0]
-            user.create_pass = text[1]
-        s.commit()
+    if new_user.exist_user(username):
+        new_user.create(username=username, password=text[0], time_register=text[1])
+    else:
+        new_user.update_time(username=username, password=text[0], time_register=text[1])
+
+    # with session() as s:
+    #     user = s.query(User).filter_by(username=username).first()
+    #     if not user:
+    #         new_user = User(username=username, password=text[0], create_pass=text[1])
+    #         s.add(new_user)
+    #     else:
+    #         user.password = text[0]
+    #         user.create_pass = text[1]
+    #     s.commit()
 
 
 @views.route('/', methods=["GET", "POST"]) # http://192.168.1.69:5000/ telegram sends messages to this address
@@ -72,18 +77,18 @@ def login():
     username = request.form.get('username') # your username from telegram
     password = request.form.get('password') # password from telegram bot
 
-    if request.method == "POST":
-        if username and password:
-            with session() as s:
-                user = s.query(User).filter_by(username=username).first()
-                time_create = user.create_pass
-                time_now = int(time.time())
-                time_range = time_now - time_create
-                if user.password == password and time_range < 15:
-                    login_user(user)
-                    return redirect(url_for('main.index'))
-
-        flash('Invalid username or password.')
+    # if request.method == "POST":
+    #     if username and password:
+    #         with session() as s:
+    #             user = s.query(User).filter_by(username=username).first()
+    #             time_create = user.create_pass
+    #             time_now = int(time.time())
+    #             time_range = time_now - time_create
+    #             if user.password == password and time_range < 15:
+    #                 login_user(user)
+    #                 return redirect(url_for('main.index'))
+    #
+    #     flash('Invalid username or password.')
 
     return render_template('login.html')
 
